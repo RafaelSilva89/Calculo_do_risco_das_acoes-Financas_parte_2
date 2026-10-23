@@ -164,3 +164,10 @@ def test_bootstrap_blocos_e_reprodutivel_e_contem_a_estimativa(retornos_independ
     b = bootstrap_blocos(retornos_independentes.iloc[:2000], estatistica, n=200, semente=7)
     pd.testing.assert_frame_equal(a, b)
     assert a.loc['desvio', 'IC inferior'] < a.loc['desvio', 'estimativa'] < a.loc['desvio', 'IC superior']
+
+
+def test_carteira_ignora_ativo_sem_peso_e_sem_dados():
+    datas = pd.bdate_range('2023-01-02', periods=3)
+    precos = pd.DataFrame({'A': [10.0, 11.0, 12.1], 'GOL': [np.nan] * 3}, index=datas)
+    valor = valor_carteira_pesos_fixos(precos, {'A': 1, 'GOL': 0}, valor_inicial=100)
+    assert valor.tolist() == pytest.approx([100, 110, 121])

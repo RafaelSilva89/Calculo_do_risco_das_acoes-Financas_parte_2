@@ -25,3 +25,10 @@ CENARIOS_ESTRESSE = {
     'Pior dia da pandemia (12/03/2020)': ('2020-03-11', '2020-03-12'),
     'Queda da pandemia (19/02 a 23/03/2020)': ('2020-02-19', '2020-03-23'),
 }
+
+# Períodos da Covid: até a véspera da queda da bolsa | até o fim da emergência declarado pela OMS | depois
+PERIODOS_COVID = {
+    'Pré-pandemia': ('2015-01-01', '2020-02-19'),
+    'Pandemia': ('2020-02-20', '2023-05-05'),
+    'Pós-pandemia': ('2023-05-06', '2025-12-31'),
+}

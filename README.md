@@ -1,4 +1,4 @@
-# 🛡️ Cálculo do Risco das Ações e da Carteira (2015–2022)
+# 🛡️ Cálculo do Risco das Ações e da Carteira (2015–2022, estendido até 2025)
 
 **Quanto risco cada ação carrega? Juntar as ações numa carteira é mais arriscado do que comprar o índice? E quanto se perde num dia ruim?**
 
@@ -16,7 +16,8 @@
 | Num dia ruim / numa crise | Com R$ 10.000 na carteira, perda de **mais de R$ 343** em 1 de cada 20 pregões. Se a queda da pandemia se repetisse: **−R$ 5.602** (16 vezes isso) |
 | VaR que funciona | O **VaR EWMA filtrado** errou em **6,2%** dos pregões da pandemia (esperado: 5%) e passou nos testes de Kupiec e Christoffersen; o VaR fixo de 2019 errou em **12,5%** |
 | Principal descoberta | Nos piores dias do mercado, a correlação entre as ações **dobra** (0,25 → 0,51): a diversificação protege menos quando mais se precisa dela |
-| Entrega | Relatório + tabela de indicadores + **app Streamlit** que calcula o risco de qualquer carteira + **34 testes automatizados** (com CI) |
+| Até 2025 e a Covid | Depois da pandemia, o BOVA11 teve a **menor** volatilidade do período (**14,8%**), mas a carteira de 4 ações (sem a GOL) ficou **mais** arriscada que antes (**34,1%** x 26,6%). O VaR EWMA errou em **5,2%** dos pregões de 2023–2025 |
+| Entrega | Relatório + tabela de indicadores + **app Streamlit** (com datas de início e término de 2015 a 2025) + **37 testes automatizados** (com CI) |
 
 ---
 
@@ -75,13 +76,15 @@ Calculo_do_risco_das_acoes-Financas_parte_2/
 ├── .github/workflows/testes.yml           # roda os testes a cada push (GitHub Actions)
 ├── Datasets/
 │   ├── acoes.csv                          # preços de fechamento diários (Yahoo Finance)
-│   └── cdi.csv                            # taxa diária do CDI (Banco Central)
+│   ├── cdi.csv                            # taxa diária do CDI (Banco Central)
+│   ├── acoes_2015_2025.csv                # base estendida até 2025 (a GOL só até 29/12/2022)
+│   └── cdi_2015_2025.csv                  # CDI até 2025
 ├── Imagens/                               # gráficos gerados pelos notebooks
 ├── Notebooks/
 │   ├── Cálculo do risco das ações - Finanças parte 2.ipynb       # versão original
 │   └── Cálculo do risco das ações - Finanças parte 2 - v2.ipynb  # versão reorganizada (CRISP-DM)
 ├── docs/
-│   └── decisoes_analiticas.md             # registro das decisões do projeto (DA-01 a DA-08)
+│   └── decisoes_analiticas.md             # registro das decisões do projeto (DA-01 a DA-14)
 ├── reports/
 │   ├── indicadores_risco.csv              # painel de risco de cada ativo e da carteira
 │   └── ficha_indicadores.json             # período, convenções, backtest e avisos de uso
@@ -94,7 +97,7 @@ Calculo_do_risco_das_acoes-Financas_parte_2/
 ├── tests/
 │   ├── test_financas.py                   # testes das funções de src/financas.py
 │   ├── test_risco.py                      # testes das medidas de risco e dos testes estatísticos
-│   └── test_app.py                        # abre o app Streamlit e confere os indicadores
+│   └── test_app.py                        # abre o app e confere indicadores, datas e a GOL (AppTest)
 ├── app.py                                 # app Streamlit (calculadora de risco de carteira)
 ├── pytest.ini
 ├── requirements.txt
@@ -128,7 +131,7 @@ pytest
 | **01. Entendimento do negócio** | Definição da pergunta e das medidas de risco |
 | **02. Preparação dos dados** | Conferência da base, dias extremos pela regra do IQR, análise exploratória com **7 hipóteses** (com testes estatísticos e tamanho de efeito) e criação dos retornos |
 | **03. Indicadores de risco** | Volatilidade, semivolatilidade, maior queda, VaR (1 e 10 dias, 95% e 99%), CVaR, beta e Sharpe com **intervalo por bootstrap**; risco da carteira; **backtest do VaR** móvel e EWMA (Kupiec e Christoffersen) e teste anti-vazamento |
-| **04. Avaliação** | Risco em reais, **testes de estresse** com 4 crises reais, risco previsto x observado na pandemia e contribuição de cada ação para o risco |
+| **04. Avaliação** | Risco em reais, **testes de estresse** com 4 crises reais, **extensão até 2025** (risco antes, durante e depois da Covid e VaR testado com dados novos), risco previsto x observado na pandemia e contribuição de cada ação para o risco |
 | **05. Implantação** | Tabela de indicadores, ficha em JSON, carteiras de **mínima variância** e inverso da volatilidade testadas com dados novos e app Streamlit |
 
 > ℹ️ Não há modelo de Machine Learning. A fase de "Modelagem" do CRISP-DM foi adaptada para o **cálculo dos indicadores de risco**. Onde o roteiro de modelos tem um equivalente real, ele foi usado: a separação treino/teste vira o **backtest do VaR**, e o teste anti-vazamento mostra o que acontece quando o VaR "olha o futuro".
@@ -258,6 +261,26 @@ pytest
 - ✅ O **VaR EWMA** reage já no dia seguinte a um choque (no gráfico, a linha azul despenca em março de 2020) e é a estimativa recomendada de "perda para amanhã".
 - 💡 O VaR calculado com o período inteiro acerta "exatamente" 5% porque **já conhece** as perdas. É o equivalente, em risco, a avaliar um modelo nos próprios dados de treino.
 
+**Até 2025: o risco antes, durante e depois da Covid**
+
+A análise foi estendida até **30/12/2025**, com uma carteira de **4 ações** (25% em cada). A GOL ficou de fora: depois da recuperação judicial, a ação virou GOLL54, passou a valer menos de R$ 0,01 e está saindo da bolsa, sem dados públicos depois de 2022.
+
+<div align="center">
+<img src="Imagens/Volatilidade%202015-2025%20Covid.png" width="850px">
+</div>
+
+| | Pré-pandemia (até 19/02/2020) | Pandemia (até 05/05/2023) | Pós-pandemia (até 30/12/2025) |
+|---|---|---|---|
+| **Volatilidade da carteira** | 26,6% | **48,1%** | **34,1%** |
+| **Volatilidade do BOVA11** | 22,4% | 30,5% | **14,8%** |
+| **Maior queda da carteira / BOVA11** | −40,7% / −35,4% | −65,3% / −44,5% | −42,2% / −13,6% |
+| **Correlação média entre as ações** | 0,20 | **0,45** | 0,26 |
+
+- Na pandemia, a volatilidade da carteira quase dobrou e a correlação entre as ações mais que dobrou.
+- Depois, o **mercado acalmou, mas a carteira não**: CVC (64,5%) e MGLU (67,3%) continuaram muito voláteis, com beta de **2,17** e **2,60**.
+- ✅ **O VaR EWMA passou no teste fora do tempo:** escolhido com dados até 2022, ele foi superado em **4,9% a 5,2%** dos pregões de 2023–2025, praticamente os 5% esperados (Kupiec não rejeita em nenhum ativo). O VaR de janela móvel ficou conservador demais (3,9% na carteira).
+- 🧪 Kruskal-Wallis do movimento diário da carteira entre as 3 fases com ε² = 0,043; pós x pré com correlação de postos de +0,15 (efeitos pequenos).
+
 ## 11. App interativo (Streamlit)
 
 A **calculadora de risco** permite montar qualquer carteira com as 5 ações e o BOVA11 e ver:
@@ -267,7 +290,7 @@ A **calculadora de risco** permite montar qualquer carteira com as 5 ações e o
 3. Quanto a carteira perderia se as **4 crises do período** se repetissem (testes de estresse);
 4. **Volatilidade ao longo do tempo** e a **correlação** entre os ativos escolhidos.
 
-O usuário escolhe o valor investido, o período e o peso de cada ativo.
+O usuário escolhe o valor investido, a **data de início** e a **data de término** (de 2015 a 2025) e o peso de cada ativo. A GOL só fica disponível em períodos que terminam até 29/12/2022, e o app mostra também o risco **antes, durante e depois da Covid** para as fases dentro do período escolhido.
 
 ```bash
 streamlit run app.py
@@ -291,6 +314,7 @@ streamlit run app.py
 | Crises | Não havia | **Testes de estresse** com 4 crises reais, em reais |
 | Incerteza | Não havia | **Intervalos de confiança por bootstrap** em blocos (volatilidade, VaR e Sharpe) |
 | Pesos | Só pesos iguais | Mínima variância e inverso da volatilidade, estimados em 2015–2019 e **testados em 2020–2022** |
+| Período | 2015 a 2022 | **Extensão até 2025**, com o risco antes, durante e depois da Covid e o VaR testado com dados novos |
 | Testes estatísticos | Não havia | 7 hipóteses, cada uma com teste e **tamanho de efeito** |
 | Dados | Incluía `stocks.csv` (simulado, não usado) | Removido; CDI acrescentado |
 | Entrega | Notebook | Notebook + `reports/` + ficha JSON + **app Streamlit** + 34 testes automatizados (com CI) |
@@ -303,8 +327,9 @@ streamlit run app.py
 4. **O risco se concentra:** com 20% do dinheiro, a GOL responde por 31% do risco da carteira.
 5. **"O risco foi recompensado" é uma estimativa, não uma certeza:** Sharpe de 0,24 x 0,08, mas o intervalo da diferença inclui o zero. A WEGE teve o 2º menor risco e o melhor Sharpe (0,51); GOL e CVC renderam menos que o CDI.
 6. **O VaR precisa reagir rápido:** o VaR de 2019 foi superado em 12,5% dos pregões da carteira na pandemia, e o de janela móvel errou em sequência. O VaR EWMA ficou em 6,2% e passou nos dois testes.
-7. **Otimizar pelo passado ajuda, mas não blinda:** a mínima variância de 2019 teve o menor risco entre as carteiras de ações em 2020–2022 (e transformou R$ 10.000 em R$ 10.951), mas oscilou o dobro do previsto.
-8. **A conta da versão original estava certa; as interpretações, não:** log lido como percentual, desvio de retorno lido em reais, coeficiente de variação com média negativa e risco analisado sem o retorno.
+7. **Depois da Covid, o risco do mercado caiu, mas o da carteira não:** BOVA11 com 14,8% de volatilidade no pós-pandemia; a carteira de 4 ações, com 34,1%, acima do pré-pandemia (26,6%). O VaR EWMA continuou calibrado em 2023–2025 (5,2%).
+8. **Otimizar pelo passado ajuda, mas não blinda:** a mínima variância de 2019 teve o menor risco entre as carteiras de ações em 2020–2022 (e transformou R$ 10.000 em R$ 10.951), mas oscilou o dobro do previsto.
+9. **A conta da versão original estava certa; as interpretações, não:** log lido como percentual, desvio de retorno lido em reais, coeficiente de variação com média negativa e risco analisado sem o retorno.
 
 ## 14. Limites
 
@@ -312,6 +337,7 @@ streamlit run app.py
 - **Poucos ativos e poucos anos:** com 6 ativos, 10 pares e 8 anos, vários testes têm pouca força estatística, e o Sharpe de 8 anos é muito incerto.
 - **VaR de 1 dia a 95%:** não cobre crises como a de março de 2020 (16 vezes o VaR); o VaR de 10 dias usa janelas sobrepostas.
 - **Uma única janela de teste (2020–2022)** para o backtest e para a mínima variância, dominada pela pandemia.
+- **Extensão sem a GOL:** a carteira de 2015–2025 tem 4 ações, então não é diretamente comparável à da análise principal.
 - **Correlação nos dias de estresse:** parte do aumento é mecânica, pela forma de escolher os dias.
 - **Sem dividendos, corretagem e impostos**, e sem o custo de rebalancear a carteira.
 
@@ -321,7 +347,7 @@ streamlit run app.py
 2. **Covariância mais estável** (encolhimento de Ledoit-Wolf ou EWMA), para que a mínima variância dependa menos de um passado calmo.
 3. **GARCH com reversão à média** e distribuição t de Student, comparado ao EWMA no backtest.
 4. **Cenários hipotéticos** (alta de juros ou do dólar), com o choque de cada setor.
-5. **Atualizar os dados** até hoje (`ATUALIZAR_DADOS = True`), substituindo o ticker da GOL, e repetir o backtest com mais anos de teste.
+5. **Atualizar os dados a cada ano** (a base já vai até 2025) e repetir o backtest do VaR EWMA com os anos novos.
 6. **Publicar o app** no Streamlit Community Cloud.
 
 ---

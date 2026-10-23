@@ -20,6 +20,8 @@ Os números vêm das saídas do notebook [`Notebooks/Cálculo do risco das açõ
 | [DA-10](#da-10--intervalos-por-bootstrap-em-blocos) | Intervalos por bootstrap em blocos |
 | [DA-11](#da-11--testes-de-estresse-com-crises-reais-e-var-de-10-dias-observado) | Testes de estresse com crises reais e VaR de 10 dias observado |
 | [DA-12](#da-12--mínima-variância-só-com-dados-até-2019) | Mínima variância só com dados até 2019 |
+| [DA-13](#da-13--extensão-até-2025-em-uma-seção-própria-com-4-ações) | Extensão até 2025 em uma seção própria, com 4 ações |
+| [DA-14](#da-14--três-fases-da-covid) | Três fases da Covid |
 
 ---
 
@@ -118,3 +120,19 @@ Os números vêm das saídas do notebook [`Notebooks/Cálculo do risco das açõ
 - **Alternativas consideradas:** fronteira eficiente completa (exige prever retornos, que são muito incertos, DA-10); reotimização anual (próximo passo, parte 3).
 - **Consequência:** a mínima variância (WEGE 45%, TOTS 30%, CVC 23%, MGLU 2%, GOL 0%) teve o menor risco entre as carteiras de ações em 2020–2022 (43,4%) e transformou R$ 10.000 em R$ 10.951, mas oscilou o dobro dos 21,8% previstos.
 - **Onde está:** item 2 da Fase 05; `pesos_minima_variancia` em `src/risco.py`.
+
+## DA-13 — Extensão até 2025 em uma seção própria, com 4 ações
+
+- **Contexto:** o usuário pediu a análise até 2025. A GOL não tem dados públicos gratuitos depois de 29/12/2022: depois da recuperação judicial, a ação virou GOLL54, passou a valer menos de R$ 0,01 e está saindo da bolsa (o Yahoo Finance não tem o ticker).
+- **Decisão:** manter a análise principal (2015–2022, 5 ações) comparável com a versão original e acrescentar a extensão no item 1.2 da Fase 04, com uma **carteira de 4 ações** (25% em cada, pesos mantidos), numa base nova (`acoes_2015_2025.csv`). As bases antigas não mudam, para que a versão original continue reproduzível.
+- **Alternativas consideradas:** manter a GOL até 2022 e redistribuir o peso dela depois (mistura duas carteiras); obter os dados da GOL em fonte paga.
+- **Consequência:** 2023–2025 viram um teste fora do tempo do VaR EWMA (5,2% de violações na carteira, Kupiec não rejeita em nenhum ativo). O download novo ajusta o preço da CVC pelos aumentos de capital de 2020 a 2022, então os números da CVC até 2022 diferem um pouco dos da análise principal.
+- **Onde está:** item 1.2 da Fase 04; `ativos_com_dados` em `src/financas.py`; `retorno_carteira_pesos_fixos` ignora ativos sem peso (a GOL vazia não contamina a carteira); no app, a GOL fica desativada em períodos que terminam depois de 2022.
+
+## DA-14 — Três fases da Covid
+
+- **Contexto:** para comparar o risco antes e depois da Covid, é preciso definir datas objetivas.
+- **Decisão:** **pré-pandemia** até 19/02/2020 (véspera da queda da bolsa), **pandemia** de 20/02/2020 a 05/05/2023 (fim da emergência de saúde declarado pela OMS) e **pós-pandemia** até 30/12/2025.
+- **Alternativas consideradas:** pandemia só em 2020–2021 (fase mais aguda).
+- **Consequência:** volatilidade da carteira de 26,6% → 48,1% → 34,1%; do BOVA11, de 22,4% → 30,5% → 14,8%; correlação média entre as ações de 0,20 → 0,45 → 0,26.
+- **Onde está:** `PERIODOS_COVID` em `src/config.py` e `classificar_periodo` em `src/financas.py`; item 1.2 da Fase 04; tabela por fase no app.

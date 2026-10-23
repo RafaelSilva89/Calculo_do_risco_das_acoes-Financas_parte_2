@@ -105,7 +105,9 @@ def indice_sharpe_retornos(retornos, retornos_cdi):
 
 def retorno_carteira_pesos_fixos(retornos, pesos):
     """Retorno diário de uma carteira que volta aos pesos-alvo todo dia (premissa da fórmula w' Σ w)."""
-    return retornos @ _vetor_pesos(pesos, retornos.columns)
+    w = _vetor_pesos(pesos, retornos.columns)
+    w = w[w > 0]   # ativos sem peso ficam de fora (e um ativo sem dados no período, como a GOL depois de 2022, não vira NaN)
+    return retornos[w.index] @ w
 
 
 def valor_carteira_pesos_fixos(precos, pesos, valor_inicial=1.0):

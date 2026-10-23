@@ -5,7 +5,7 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 
-from src.config import PREGOES_POR_ANO
+from src.config import PERIODOS_COVID, PREGOES_POR_ANO
 
 # Ticker na B3 (Yahoo Finance) -> nome curto usado nas análises
 TICKERS = {
@@ -45,9 +45,17 @@ def baixar_precos(tickers=TICKERS, inicio='2015-01-01', fim='2022-12-31', coluna
 
 
 def baixar_cdi(inicio='2015-01-01', fim='2022-12-31'):
-    """Baixa a taxa diária do CDI (em %) da API do Banco Central."""
-    url = URL_CDI.format(inicio=pd.Timestamp(inicio).strftime('%d/%m/%Y'), fim=pd.Timestamp(fim).strftime('%d/%m/%Y'))
-    cdi = pd.read_json(url)
+    """Baixa a taxa diária do CDI (em %) da API do Banco Central.
+
+    A API aceita no máximo 10 anos por consulta; períodos maiores são baixados em blocos.
+    """
+    partes, inicio, fim = [], pd.Timestamp(inicio), pd.Timestamp(fim)
+    while inicio <= fim:
+        fim_bloco = min(inicio + pd.DateOffset(years=10) - pd.Timedelta(days=1), fim)
+        url = URL_CDI.format(inicio=inicio.strftime('%d/%m/%Y'), fim=fim_bloco.strftime('%d/%m/%Y'))
+        partes.append(pd.read_json(url))
+        inicio = fim_bloco + pd.Timedelta(days=1)
+    cdi = pd.concat(partes)
     cdi['data'] = pd.to_datetime(cdi['data'], format='%d/%m/%Y')
     return cdi.set_index('data')['valor'].rename('CDI')
 
@@ -64,6 +72,22 @@ def carregar_cdi(caminho, datas):
     acumulado = (1 + taxa / 100).cumprod()
     acumulado = acumulado / acumulado.iloc[0]
     return acumulado.reindex(datas, method='ffill').rename('CDI')
+
+
+# ---------------------------------------------------------------------------------------------
+# Períodos de análise (extensão até 2025)
+# ---------------------------------------------------------------------------------------------
+def classificar_periodo(datas, periodos=PERIODOS_COVID):
+    """Nome do período (pré-pandemia, pandemia ou pós-pandemia) de cada data; fora deles, vazio."""
+    rotulos = pd.Series(pd.NA, index=pd.DatetimeIndex(datas), dtype='object')
+    for nome, (inicio, fim) in periodos.items():
+        rotulos[(rotulos.index >= inicio) & (rotulos.index <= fim)] = nome
+    return rotulos
+
+
+def ativos_com_dados(precos):
+    """Ativos com preço em todos os pregões do período (a GOL não tem dados públicos depois de 2022)."""
+    return [ativo for ativo in precos.columns if precos[ativo].notna().all()]
 
 
 # ---------------------------------------------------------------------------------------------
