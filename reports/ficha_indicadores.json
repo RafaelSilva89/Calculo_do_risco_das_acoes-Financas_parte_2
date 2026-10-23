@@ -1,0 +1,188 @@
+{
+  "data_calculo": "2026-10-23 08:05",
+  "periodo": {
+    "inicio": "2015-01-02",
+    "fim": "2022-12-29",
+    "pregoes": 1988
+  },
+  "ativos": [
+    "GOL",
+    "CVC",
+    "WEGE",
+    "MGLU",
+    "TOTS",
+    "BOVA"
+  ],
+  "carteira": {
+    "pesos": {
+      "GOL": 0.2,
+      "CVC": 0.2,
+      "WEGE": 0.2,
+      "MGLU": 0.2,
+      "TOTS": 0.2
+    },
+    "premissa": "pesos mantidos todo dia (formula w Sigma w)"
+  },
+  "convencoes": {
+    "retorno": "simples diário",
+    "anualizacao": "raiz de 252 pregões",
+    "var": "histórico, nível 95%, perda positiva de 1 dia",
+    "var_movel": "janela de 252 pregões anteriores",
+    "sharpe": "(CAGR - CAGR do CDI) / volatilidade"
+  },
+  "backtest_2020_2022": {
+    "GOL": {
+      "violacoes_fixo": 0.06308724832214765,
+      "violacoes_movel": 0.06442953020134229,
+      "violacoes_ewma": 0.05906040268456376
+    },
+    "CVC": {
+      "violacoes_fixo": 0.2,
+      "violacoes_movel": 0.07651006711409396,
+      "violacoes_ewma": 0.056375838926174496
+    },
+    "WEGE": {
+      "violacoes_fixo": 0.10469798657718121,
+      "violacoes_movel": 0.06174496644295302,
+      "violacoes_ewma": 0.05503355704697987
+    },
+    "MGLU": {
+      "violacoes_fixo": 0.10067114093959731,
+      "violacoes_movel": 0.08053691275167785,
+      "violacoes_ewma": 0.06174496644295302
+    },
+    "TOTS": {
+      "violacoes_fixo": 0.10738255033557047,
+      "violacoes_movel": 0.06174496644295302,
+      "violacoes_ewma": 0.056375838926174496
+    },
+    "BOVA": {
+      "violacoes_fixo": 0.07248322147651007,
+      "violacoes_movel": 0.05771812080536913,
+      "violacoes_ewma": 0.05503355704697987
+    },
+    "CARTEIRA": {
+      "violacoes_fixo": 0.12483221476510067,
+      "violacoes_movel": 0.06577181208053691,
+      "violacoes_ewma": 0.06174496644295302
+    }
+  },
+  "intervalos_bootstrap_95": {
+    "Volatilidade da carteira": {
+      "inferior": 0.3307134581523686,
+      "superior": 0.48201803763193124
+    },
+    "Volatilidade do BOVA11": {
+      "inferior": 0.21905095273869424,
+      "superior": 0.31600546759016973
+    },
+    "VaR 95% da carteira": {
+      "inferior": 0.030902933979796827,
+      "superior": 0.03795094983852804
+    },
+    "Sharpe da carteira": {
+      "inferior": -0.5375753892449705,
+      "superior": 1.3744087388640849
+    },
+    "Sharpe do BOVA11": {
+      "inferior": -0.560079248844621,
+      "superior": 1.0034360503178295
+    },
+    "Sharpe: carteira − BOVA11": {
+      "inferior": -0.2677834569623706,
+      "superior": 0.7899784446895809
+    }
+  },
+  "estresse_carteira_r10mil": {
+    "Joesley Day (18/05/2017)": -1056.0,
+    "Greve dos caminhoneiros (mai/2018)": -35.0,
+    "Pior dia da pandemia (12/03/2020)": -2300.0,
+    "Queda da pandemia (19/02 a 23/03/2020)": -5602.0
+  },
+  "indicadores": {
+    "BOVA": {
+      "Volatilidade anual": 0.2602,
+      "Semivolatilidade": 0.187,
+      "Maior queda": -0.4693,
+      "VaR 95%": 0.0235,
+      "CVaR 95%": 0.0367,
+      "Beta": 1.0,
+      "CAGR": 0.1063,
+      "Índice de Sharpe": 0.0795,
+      "Ranking médio de risco": 1.0
+    },
+    "WEGE": {
+      "Volatilidade anual": 0.352,
+      "Semivolatilidade": 0.2371,
+      "Maior queda": -0.5048,
+      "VaR 95%": 0.0321,
+      "CVaR 95%": 0.0458,
+      "Beta": 0.7066,
+      "CAGR": 0.2641,
+      "Índice de Sharpe": 0.5068,
+      "Ranking médio de risco": 2.2
+    },
+    "TOTS": {
+      "Volatilidade anual": 0.3936,
+      "Semivolatilidade": 0.2725,
+      "Maior queda": -0.4971,
+      "VaR 95%": 0.036,
+      "CVaR 95%": 0.0551,
+      "Beta": 0.7435,
+      "CAGR": 0.111,
+      "Índice de Sharpe": 0.0645,
+      "Ranking médio de risco": 3.0
+    },
+    "CARTEIRA": {
+      "Volatilidade anual": 0.396,
+      "Semivolatilidade": 0.2813,
+      "Maior queda": -0.6582,
+      "VaR 95%": 0.0343,
+      "CVaR 95%": 0.0552,
+      "Beta": 1.1284,
+      "CAGR": 0.1811,
+      "Índice de Sharpe": 0.241,
+      "Ranking médio de risco": 3.8
+    },
+    "CVC": {
+      "Volatilidade anual": 0.5881,
+      "Semivolatilidade": 0.4113,
+      "Maior queda": -0.9435,
+      "VaR 95%": 0.0504,
+      "CVaR 95%": 0.0826,
+      "Beta": 1.2378,
+      "CAGR": -0.1416,
+      "Índice de Sharpe": -0.3864,
+      "Ranking médio de risco": 5.4
+    },
+    "MGLU": {
+      "Volatilidade anual": 0.6753,
+      "Semivolatilidade": 0.4262,
+      "Maior queda": -0.9224,
+      "VaR 95%": 0.0575,
+      "CVaR 95%": 0.0877,
+      "Beta": 1.194,
+      "CAGR": 0.3615,
+      "Índice de Sharpe": 0.4085,
+      "Ranking médio de risco": 5.8
+    },
+    "GOL": {
+      "Volatilidade anual": 0.7709,
+      "Semivolatilidade": 0.4923,
+      "Maior queda": -0.9237,
+      "VaR 95%": 0.0644,
+      "CVaR 95%": 0.0978,
+      "Beta": 1.7604,
+      "CAGR": -0.0855,
+      "Índice de Sharpe": -0.222,
+      "Ranking médio de risco": 6.8
+    }
+  },
+  "avisos": [
+    "Risco histórico: não garante o risco futuro.",
+    "Volatilidade e VaR mudam muito entre períodos calmos e de crise; prefira o VaR EWMA filtrado.",
+    "O Sharpe tem intervalo de confiança largo: a diferença carteira x BOVA11 não é estatisticamente clara.",
+    "VaR pela curva normal subestima as perdas extremas (caudas gordas).",
+    "Sem custos de corretagem, impostos ou taxa de administração."
+  ]
+}

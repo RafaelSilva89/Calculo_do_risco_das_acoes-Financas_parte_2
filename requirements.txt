@@ -1,0 +1,9 @@
+pandas
+numpy
+scipy
+matplotlib
+seaborn
+jupyter
+pytest
+streamlit
+yfinance  # opcional: só para atualizar os preços (ATUALIZAR_DADOS = True no notebook)
